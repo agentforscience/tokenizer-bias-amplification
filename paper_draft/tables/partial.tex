@@ -1,0 +1,28 @@
+\begin{table}[t]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}llrrrrc@{}}
+        \toprule
+             &       &                       & \multicolumn{3}{c}{Partial $r$ of fertility with drop, given} & Unique \rsq \\
+        \cmidrule(lr){4-6}
+        Task & Model & $r$(fert., size) & size & size + syntactic & size + syntactic + script & fert.\ / size / syntactic \\
+        \midrule
+        \xnli & \mbert & $-0.29$ & 0.32 (0.68)        & 0.38 (1.0)         & 0.26 (1.0)    & 0.02 / 0.12 / 0.05 \\
+              & \xlmr  & 0.00    & $-0.05$ (0.89)     & $-0.03$ (1.0)      & $-0.24$ (1.0) & 0.00 / 0.16 / 0.07 \\
+        \midrule
+        NER   & \mbert & $-0.33$ & {\bf 0.34} (0.026) & 0.09 (1.0)         & $-0.22$ (0.38) & 0.005 / 0.001 / 0.20 \\
+              & \xlmr  & $-0.33$ & 0.25 (0.18)        & 0.02 (1.0)         & $-0.11$ (1.0)  & 0.00 / 0.005 / 0.24 \\
+        \midrule
+        \sib  & \mbert & $-0.33$ & {\bf 0.43} (0.002) & {\bf 0.34} (0.031) & 0.28 (0.16)    & 0.05 / 0.27 / 0.01 \\
+              & \xlmr  & $-0.33$ & 0.21 (0.27)        & 0.09 (1.0)         & 0.08 (1.0)     & 0.004 / 0.31 / 0.03 \\
+        \bottomrule
+    \end{tabular}
+    }
+    \caption{
+        Does fertility carry information beyond pretraining size?
+        Holm-adjusted $p$-values in parentheses; partial correlations with adjusted $p<0.05$ in \textbf{bold}.
+        Unique \rsq is the loss in \rsq when a predictor is removed from the model with fertility, log size and syntactic distance.
+        Fertility's unique contribution never exceeds 0.05.
+    }
+    \label{tab:partial}
+\end{table}

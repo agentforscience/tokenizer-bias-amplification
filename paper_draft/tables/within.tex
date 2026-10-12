@@ -1,0 +1,17 @@
+\begin{table}[t]
+    \centering
+    \begin{tabular}{@{}lrlcl@{}}
+        \toprule
+        Task & $n$ & Pearson $r$ [95\% CI] & Spearman $\rho$ & Partial $r$ given size difference \\
+        \midrule
+        \xnli & 12 & 0.61 [0.30, 0.93] & 0.83 & 0.59 ($p=0.056$) \\
+        NER   & 67 & 0.34 [0.13, 0.53] & 0.36 & 0.34 ($p=0.006$) \\
+        \sib  & 67 & 0.57 [0.38, 0.71] & 0.64 & 0.57 ($p<0.001$) \\
+        \bottomrule
+    \end{tabular}
+    \caption{
+        Within-language contrast: correlation between the fertility difference (\mbert minus \xlmr) and the drop difference (\mbert minus \xlmr) across languages.
+        The language, its typology and its test data are the same on both sides of each difference.
+    }
+    \label{tab:within}
+\end{table}

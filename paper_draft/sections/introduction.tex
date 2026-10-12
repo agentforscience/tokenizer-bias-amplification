@@ -1,0 +1,44 @@
+\section{Introduction}
+\label{sec:intro}
+
+If a multilingual model fails on a language because its tokenizer shreds that language into tiny pieces, we can fix the tokenizer.
+If it fails because the language is structurally far from English, we cannot.
+Which of the two explains zero-shot transfer loss therefore decides where practitioners should spend effort, and which languages they should flag as risky before any labeled data exists.
+
+Multilingual encoders such as \mbert~\cite{devlin2019bert} and \xlmr~\cite{conneau2020xlmr} are routinely fine-tuned on English and applied to other languages.
+The size of the resulting drop differs greatly by language~\cite{pires2019multilingual,wu2020all,hu2020xtreme}.
+One appealing account points to \emph{tokenizer fertility}, the number of subword tokens per word~\cite{acs2019exploring}.
+A shared vocabulary is dominated by high-resource languages, so other languages are split into more and shorter pieces, and over-segmentation hurts monolingual downstream quality~\cite{rust2021good}.
+The competing account points to typological distance and pretraining corpus size~\cite{pires2019multilingual,lauscher2020zero}.
+
+{\bf How much of the transfer drop does fertility explain?}
+Existing work studies these factors separately.
+What is missing is a head-to-head comparison in which fertility, typological distance and pretraining size compete to predict the \emph{same} transfer drops, across several tasks and two tokenizers, with a check of whether fertility is more than a proxy for the other two.
+We test a concrete hypothesis with four parts:
+(H1) the fertility ratio relative to English explains 40--60\% of the variance in transfer degradation;
+(H2) it outperforms typological distance;
+(H3) above 2.5$\times$ English fertility, transfer fails catastrophically (a drop of more than 30 points); and
+(H4) the effect is independent of pretraining data size.
+
+We fine-tune \mbert and \xlmr on English for natural language inference (\xnli), named entity recognition (\wikiann) and topic classification (\sib), and evaluate zero-shot on up to 71 target languages that both models saw in pretraining.
+We fixed the analysis plan before training any model.
+Because fertility, typology, size and script are correlated across languages, we add two designs that hold the language fixed: a within-language contrast between the two tokenizers, and an intervention that re-segments English test inputs into finer pieces.
+
+The hypothesis is not supported as stated (see \figref{fig:r2}).
+Fertility explains 0--27\% of the between-language variance in transfer drop, below the hypothesized range in all six model--task cells.
+Syntactic distance from English explains 28--68\% and exceeds fertility in every cell; log pretraining size explains clearly more than fertility in four of six.
+Pooled over cells, fertility reaches $R^2=0.16$ [0.07, 0.28], against 0.37 for syntactic distance and 0.32 for log size.
+Once size and syntactic distance are controlled, fertility adds at most 0.05 of \rsq.
+Yet fragmentation does matter in a narrower sense.
+For a given language, the model whose tokenizer fragments it more loses more ($r=0.34$--$0.61$), and over-segmenting English at test time costs 10--24 points at about 1.4$\times$ fertility and 30--59 points at about 2$\times$.
+Fragmentation can hurt; it is just not what separates languages that transfer well from those that do not.
+
+In summary, our contributions are:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item We compare fertility, \uriel typological distances and pretraining size as predictors of the same zero-shot transfer drops over 71 target languages, three tasks and two models, with bootstrap confidence intervals.
+    \item We test the specific numerical claims of the fertility hypothesis and find that none holds in general: \rsq is 0--27\%, syntactic distance wins in every cell, and the 2.5$\times$ threshold is consistent with the data in one cell of six.
+    \item We separate fertility from language identity with a within-language tokenizer contrast and an over-segmentation intervention, and show that fragmentation has a real cost when it is unfamiliar to the model.
+    \item We report an exploratory lead: a tokens-per-parallel-sentence measure reaches $R^2=0.42$--$0.51$ on \sib and survives controls there, but not on NER or \xnli.
+\end{itemize}
+
+We review related work in \secref{sec:related}, describe the setup in \secref{sec:method}, present results in \secref{sec:results}, and discuss interpretation and limitations in \secref{sec:discussion}.

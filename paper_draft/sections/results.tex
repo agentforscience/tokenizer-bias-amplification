@@ -1,0 +1,172 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Transfer Performance}
+\Tabref{tab:transfer} summarizes zero-shot transfer.
+Mean drops range from 7.2 points (\sib, \xlmr) to 19.9 points (NER, \mbert), with large spread across languages; this spread is what the predictors must explain.
+The seed standard deviation of a language's score averages 0.4 points (\xnli) to 1.7 points (NER), small relative to the between-language spread.
+On whitespace-segmented targets, fertility ratios range from 0.92 to 3.80 for \mbert (median 1.64) and from 0.84 to 2.02 for \xlmr (median 1.31).
+\xlmr's larger vocabulary fragments every language less than \mbert's.
+
+\input{tables/transfer}
+
+\subsection{H1 and H2: Variance Explained}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/fig2_r2_by_predictor.png}
+    \caption{
+        \rsq of transfer drop for each predictor alone, by model (rows) and task (columns).
+        Lines show 95\% bootstrap confidence intervals and the grey band marks the hypothesized 40--60\% range.
+        The fertility bar falls short of the band in every panel, while syntactic distance or log pretraining size reaches or exceeds it in most.
+    }
+    \label{fig:r2}
+\end{figure}
+
+\input{tables/r2}
+
+\para{H1 is not supported.}
+\Tabref{tab:r2} and \figref{fig:r2} show that no fertility point estimate falls in the 40--60\% range; the values are 0.00--0.27.
+The upper confidence bound reaches 0.40 only where the interval is widest: the two 12-language \xnli cells (0.60 and 0.40) and \sib with \mbert (0.46).
+The association is nonetheless real in the larger cells.
+On NER and \sib, Pearson $r$ is 0.33--0.52 and Spearman $\rho$ is 0.40--0.66, all with Holm-adjusted $p<0.02$.
+On \xnli it is not distinguishable from zero ($r=0.40$ and $-0.03$, $n=12$).
+\Figref{fig:scatter} shows the underlying scatter.
+
+\para{H2 is not supported; the sign is reversed.}
+Fertility \rsq is below syntactic-distance \rsq in all six cells.
+The bootstrap interval of the difference excludes zero in four cells (both \xnli and both NER cells, with differences of $-0.24$ to $-0.64$); after Holm correction only NER with \xlmr stays below 0.05.
+On \sib the two predictors are statistically indistinguishable (differences of $-0.03$ and $-0.13$).
+Which baseline is strongest depends on the task: log pretraining size is the best single predictor on \xnli and \sib, and syntactic distance on NER, where size and fertility are tied at low values.
+
+\para{Pooled estimate.}
+Over 292 language--cell rows from 67 languages, fertility explains 0.16 [0.07, 0.28], syntactic distance 0.37 [0.26, 0.48] and log size 0.32 [0.19, 0.46].
+The difference between fertility and syntactic distance is $-0.21$ [$-0.33$, $-0.08$].
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/fig1_fertility_vs_drop.png}
+    \caption{
+        Transfer drop against fertility ratio for each language, with the OLS fit.
+        The dashed line marks the hypothesized 2.5$\times$ threshold and the dotted line a 30-point drop.
+        Many languages with low fertility have large drops (\eg \lang{ur}, \lang{fa}, \lang{sw}, \lang{mg}), and no language exceeds 2.5$\times$ under \xlmr (bottom row).
+    }
+    \label{fig:scatter}
+\end{figure}
+
+\subsection{H3: The 2.5$\times$ Threshold}
+
+\input{tables/threshold}
+
+\Tabref{tab:threshold} tests the threshold claim.
+Under \xlmr's tokenizer no whitespace-segmented language exceeds 2.02$\times$, so we cannot test the claim there; yet 10 languages still lose more than 30 F1 on NER.
+Under \mbert, six languages exceed 2.5$\times$.
+NER fits the claim (5 of 6 fail above the threshold against 8 of 61 below; Fisher $p=0.001$), but topic classification does not (1 of 6 against 3 of 61; $p=0.32$), and the mean \sib drop above the threshold is 19.7 points.
+
+We find no break at 2.5.
+Adding a hinge at 2.5 to the linear fit does not help, and its coefficient is negative (NER $p=0.33$, \sib $p=0.07$); if anything, the slope flattens.
+
+The NER result is also entangled with script.
+All six languages above 2.5$\times$ use Brahmic or Georgian scripts.
+In a post hoc check, 6 of the 21 non-Latin targets with fertility \emph{below} 2.5 also lose more than 30 F1, including the four largest drops in the cell (\lang{pa}, \lang{ur}, \lang{fa}, \lang{ar}, at fertility 1.3--1.9), against 2 of 40 Latin-script targets.
+With the parallel token ratio over all 71 targets, three languages exceed 2.5 for \mbert (\lang{ml}, \lang{my}, \lang{th}); all three fail on NER and none on \sib.
+We conclude that H3 is not supported as a general rule; the data are consistent with it in one cell of six.
+
+\subsection{H4: Independence from Pretraining Size}
+
+\input{tables/partial}
+
+\Tabref{tab:partial} shows that fertility and pretraining size are only moderately correlated ($r\approx-0.3$), so the fertility association is not simply a size effect.
+Given size alone, the partial correlation stays positive in five cells and is significant in two.
+Given size \emph{and} syntactic distance, it is significant in one cell (\sib with \mbert), and fertility's unique contribution is at most 0.05 of \rsq everywhere.
+We find no fertility $\times$ size interaction in any cell (all $p>0.1$).
+H4 is therefore supported only in a narrow sense: size alone does not explain the association away, but fertility carries little information beyond size and syntax together.
+
+\subsection{Within-Language Contrast}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/fig3_within_language_contrast.png}
+    \caption{
+        Within-language contrast.
+        Each point is one language; the x-axis is how much more \mbert fragments it than \xlmr, and the y-axis is how much more \mbert loses on it.
+        The relationship is positive on all three tasks ($r=0.61$, 0.34, 0.57).
+    }
+    \label{fig:within}
+\end{figure}
+
+\input{tables/within}
+
+For a given language, the more \mbert fragments it relative to \xlmr, the larger \mbert's extra drop (\figref{fig:within}, \tabref{tab:within}).
+The correlation is 0.61 on \xnli, 0.34 on NER and 0.57 on \sib, and it barely changes when we control for the difference in pretraining size.
+Typology is fixed by construction, so this is the strongest observational evidence here for a fertility effect.
+It does not isolate segmentation, however: the two models also differ in pretraining corpus, objective and training budget.
+
+\subsection{Intervention: Over-Segmenting English}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/fig4_intervention.png}
+    \caption{
+        Drop in English score when we force finer segmentation at test time (lines, with seed SD), compared with the observed drops of other languages at their natural fertility (hollow points).
+        The loss grows monotonically and steeply, and on \sib over-segmented English does far worse than natural languages at the same fertility.
+    }
+    \label{fig:intervention}
+\end{figure}
+
+\input{tables/intervention}
+
+Finer segmentation of the same English text causes a monotonic, steep loss in every cell (\tabref{tab:intervention}, \figref{fig:intervention}).
+A 4-character cap, which raises fertility to 1.2--1.5$\times$, costs 10--24 points; a 2-character cap, at 1.8--2.3$\times$, costs 30--59 points.
+At equal fertility the loss can be much larger than the cross-lingual regression line predicts.
+On \sib with \mbert at 1.73$\times$, over-segmented English loses 42 points, against about 12 for a typical language at that fertility.
+Real high-fertility languages do much better than over-segmented English.
+
+{\bf What does the intervention measure?}
+It shows that segmentation granularity has a causal effect on these models, with a caveat about what kind.
+The forced pieces are sequences the model rarely or never saw for those words in pretraining or fine-tuning, so the intervention measures the cost of \emph{unfamiliar} fragmentation.
+A language that is naturally fragmented was pretrained in that form.
+The gap between the intervention curve and the cross-lingual points suggests that pretraining exposure absorbs most of the cost, which fits fertility being a weak cross-lingual predictor.
+This reading is an interpretation; no experiment here tests it directly.
+At the 1-character cap the two sentence-level tasks also mix fragmentation with truncation; at 2 characters and above, truncation is under 1\%.
+
+\subsection{Robustness and Exploratory Results}
+
+\input{tables/robustness}
+
+\Tabref{tab:robustness} reports \rsq under alternative definitions and subsets.
+The primary conclusion does not depend on linear versus log fertility, or on the ten NER test sets with only 100 sentences.
+
+\para{The fertility definition matters on \sib.}
+The parallel token ratio explains 42--51\% of the variance there, inside the hypothesized range.
+It keeps a partial correlation of 0.45--0.60 after controlling for size, syntactic distance and script (uncorrected $p<0.001$).
+This is not due to the four added unsegmented languages, since it holds on the same 67 targets.
+On NER and \xnli the same measure does no better than the primary one, and pretraining size still matches or exceeds it on \sib (0.55--0.56).
+The \sib test sentences are themselves \flores sentences, so here the parallel ratio is measured on the same text distribution as the task, which may be part of why it works.
+The measure was pre-specified as secondary, but its decomposition is post hoc and it is one of several variants, so we treat it as a lead and not as a confirmation.
+
+\para{In-domain fertility is a better measurement.}
+Measuring fertility on \wikiann's own words roughly doubles \rsq on NER (0.36 and 0.28), still below syntactic distance (0.41).
+
+\para{On NER, fertility is a between-script difference.}
+Within either script group, fertility explains essentially nothing on NER (0.00--0.04), so its cell-level \rsq of 0.11--0.17 reflects the difference between Latin and non-Latin targets.
+
+\para{Measurement noise.}
+With 204 test sentences per language, binomial sampling accounts for 17\% (\mbert) and 38\% (\xlmr) of the between-language variance in \sib drops, which caps any predictor's \rsq near 0.83 and 0.62.
+Pretraining size (0.54, 0.55) is close to that ceiling for \xlmr; fertility (0.27, 0.14) is not.
+\xnli drops are 96--98\% reliable.
+
+\subsection{Error Analysis: Where Fertility Mispredicts}
+We inspect the residuals of the fertility regression and find three patterns.
+
+\para{Low fertility, large drop.}
+Urdu, Persian, Arabic, Swahili, Malagasy and Irish lose far more than fertility predicts: on NER with \mbert, the residuals are $+33$ for Urdu, $+32$ for Punjabi, $+28$ for Persian and $+23$ for Arabic, and on \sib $+24$ for both Malagasy and Irish.
+These languages are tokenized compactly but are syntactically distant, low-resource, or (for NER) written in Arabic script.
+\xlmr tokenizes Urdu at 0.98$\times$ English and still loses 17 points on \xnli.
+
+\para{High fertility, small drop.}
+Finnish, Hungarian, Korean and Telugu lose less than fertility predicts.
+These agglutinative, well-resourced languages are fragmented heavily and transfer fine.
+
+\para{Task dependence.}
+NER residuals split by script (mean about $+5$ for non-Latin and $-4$ for Latin targets), whereas sentence-classification residuals do not (within 1 point).

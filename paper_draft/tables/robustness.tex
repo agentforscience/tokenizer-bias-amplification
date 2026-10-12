@@ -1,0 +1,27 @@
+\begin{table}[t]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}lcccccc@{}}
+        \toprule
+                & \multicolumn{2}{c}{\xnli} & \multicolumn{2}{c}{NER} & \multicolumn{2}{c}{\sib} \\
+        \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
+        Variant & \mbert & \xlmr & \mbert & \xlmr & \mbert & \xlmr \\
+        \midrule
+        Primary (subwords per word, linear)                  & 0.16 & 0.00 & 0.17 & 0.11 & 0.27 & 0.14 \\
+        log fertility                                        & 0.19 & 0.00 & 0.18 & 0.10 & 0.31 & 0.15 \\
+        Parallel token ratio, all targets                    & 0.33 & 0.01 & 0.27 & 0.00 & {\bf 0.51} & {\bf 0.42} \\
+        Parallel token ratio, segmented targets (post hoc)   & 0.14 & 0.00 & 0.22 & 0.03 & {\bf 0.50} & {\bf 0.44} \\
+        Fertility measured on \wikiann words                 & --   & --   & 0.36 & 0.28 & --   & --   \\
+        NER test sets of 1{,}000+ sentences                  & --   & --   & 0.16 & 0.09 & --   & --   \\
+        Latin-script targets only                            & 0.52$^\dagger$ & 0.15$^\dagger$ & 0.04 & 0.03 & 0.32 & 0.18 \\
+        Non-Latin targets only                               & 0.34$^\dagger$ & 0.49$^\dagger$ & 0.00 & 0.01 & 0.23 & 0.07 \\
+        \bottomrule
+    \end{tabular}
+    }
+    \caption{
+        \rsq of transfer drop on fertility under alternative definitions and subsets.
+        Values inside the hypothesized 40--60\% range with $n=67$ or more are in \textbf{bold}.
+        $^\dagger$~$n=6$ languages.
+    }
+    \label{tab:robustness}
+\end{table}

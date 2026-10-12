@@ -1,0 +1,25 @@
+\begin{table}[t]
+    \centering
+    \resizebox{0.9\textwidth}{!}{%
+    \begin{tabular}{@{}llcrrrrl@{}}
+        \toprule
+        Task & Model & Seeds & English & Mean target & Mean drop & SD of drop & Largest drop \\
+        \midrule
+        \xnli    & \mbert & 3 & 78.1 & 64.3 & 13.8 & 6.7  & 27.4 (\lang{sw}) \\
+                 & \xlmr  & 3 & 80.9 & 70.8 & 10.0 & 4.0  & 17.2 (\lang{sw}) \\
+        \midrule
+        \wikiann NER & \mbert & 3 & 84.4 & 64.6 & 19.9 & 15.2 & 83.8 (\lang{th}) \\
+                 & \xlmr  & 3 & 82.8 & 64.6 & 18.2 & 15.5 & 79.0 (\lang{th}) \\
+        \midrule
+        \sib     & \mbert & 5 & 88.5 & 76.5 & 12.1 & 9.0  & 36.5 (\lang{mg}) \\
+                 & \xlmr  & 5 & 89.5 & 82.4 & 7.2  & 5.5  & 27.0 (\lang{ga}) \\
+        \bottomrule
+    \end{tabular}
+    }
+    \caption{
+        Zero-shot transfer performance over all target languages (14 for \xnli, 71 for NER and \sib).
+        Scores are accuracy (\xnli, \sib) or span F1 (NER), averaged over seeds; drops are in points relative to English.
+        Uniform chance is 33\% for \xnli and 14\% for \sib.
+    }
+    \label{tab:transfer}
+\end{table}

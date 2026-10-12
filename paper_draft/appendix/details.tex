@@ -1,0 +1,39 @@
+\section{Training Details}
+\label{sec:app_training}
+
+All runs use AdamW with a linear learning-rate schedule and 10\% warmup, mixed precision, an evaluation batch size of 128, and model selection on English dev data only.
+\Tabref{tab:hparams} lists the task-specific settings.
+NER uses first-subword labeling and span F1 computed with seqeval.
+For \sib we keep the checkpoint from the best English-dev epoch.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{@{}lccccc@{}}
+        \toprule
+        Task & Epochs & Batch size & Learning rate & Max length & Seeds \\
+        \midrule
+        \xnli & 2  & 32 & $2\times10^{-5}$ & 128 & 3 \\
+        NER   & 5  & 32 & $3\times10^{-5}$ & 256 & 3 \\
+        \sib  & 20 & 16 & $2\times10^{-5}$ & --  & 5 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Fine-tuning hyperparameters. The same settings are used for both models.}
+    \label{tab:hparams}
+\end{table}
+
+\para{Environment.}
+We ran all experiments on four NVIDIA RTX A6000 GPUs (48 GB) shared with unrelated jobs, using Python 3.11.14, torch 2.14.1, transformers 5.19.0 and tokenizers 0.23.3.
+Wall time per run was 2--4 minutes for \sib, 17--56 minutes for NER and 29--45 minutes for \xnli.
+Bootstrap resampling uses seed 42.
+
+\section{Deviations from the Pre-Specified Plan}
+\label{sec:app_deviations}
+
+We wrote the analysis plan before training any model and logged the following deviations.
+\begin{enumerate}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item \emph{\xnli training set.} We trained on a fixed random 100k subset of MNLI (the same subset for all seeds and both models) instead of all 393k examples, because the shared GPUs ran at 2--4 steps per second. English accuracy is about 3 points below published full-data numbers.
+    \item \emph{\mbert pretraining size.} We use the byte size of each language's November 2023 Wikipedia dump instead of article counts, because the Wikimedia API rate-limited our requests. Neither is the 2018 dump on which \mbert was trained.
+    \item \emph{\uriel distances.} The installed lang2vec package ships feature vectors but not precomputed distances, so we computed cosine distances on kNN-imputed feature vectors, and Euclidean distance for the geographic features. Basque has an empty family vector, so we set its genetic distance to 1.
+    \item \emph{Small NER test sets.} Ten \wikiann targets have only 100 test sentences. We keep them in the primary analysis because the language set was fixed in advance, and we report a robustness row restricted to test sets of 1{,}000 or more sentences (\tabref{tab:robustness}).
+    \item \emph{Script control.} We added script as a control in H4 after seeing that the \mbert languages above 2.5$\times$ use Brahmic or Georgian scripts, but before running any regression.
+\end{enumerate}

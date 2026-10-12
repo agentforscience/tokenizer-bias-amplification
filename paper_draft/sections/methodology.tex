@@ -1,0 +1,82 @@
+\section{Methodology}
+\label{sec:method}
+
+\subsection{Problem Setup and Hypotheses}
+For a model $m$ and a task $t$, we fine-tune on English and measure the test score $s_{m,t}(\ell)$ on each target language $\ell$.
+The dependent variable is the \emph{transfer drop}
+\begin{equation}
+    \Delta_{m,t}(\ell) = s_{m,t}(\text{en}) - s_{m,t}(\ell),
+    \label{eq:drop}
+\end{equation}
+in points, averaged over seeds.
+Relative drop is a constant multiple of $\Delta$ within a model--task cell, so \rsq is identical.
+The language is the unit of analysis within each of the six model--task cells.
+
+We decompose the hypothesis into four pre-specified tests.
+{\bf H1}: \rsq of $\Delta$ regressed on the fertility ratio lies in $[0.40, 0.60]$.
+{\bf H2}: \rsq of fertility exceeds \rsq of typological distance.
+{\bf H3}: languages with fertility ratio above 2.5 have $\Delta>30$, and languages below mostly do not.
+{\bf H4}: the fertility effect survives controlling for pretraining data size.
+
+\subsection{Models, Tasks and Languages}
+\para{Models.}
+We use \mbert (\texttt{bert-base-multilingual-cased}; WordPiece, 119k vocabulary; pretrained on Wikipedia in 104 languages) and \xlmr (\texttt{xlm-roberta-base}; SentencePiece unigram, 250k vocabulary; pretrained on CC-100 in 100 languages).
+We choose these two because they are the standard zero-shot transfer baselines and they have different tokenizers, so a result is not a property of one vocabulary.
+
+\para{Tasks.}
+\Tabref{tab:setup} lists the three tasks.
+We use three so that the result is not a property of one benchmark: \xnli~\cite{conneau2018xnli} trained on MNLI~\cite{williams2018mnli}, \wikiann NER~\cite{pan2017wikiann,rahimi2019massively}, and \sib topic classification~\cite{adelani2024sib200}.
+
+\input{tables/setup}
+
+\para{Languages.}
+We use all 72 languages (English plus 71 targets) that are in \mbert's pretraining list, in \xlmr's, in \flores and in \wikiann.
+Restricting to languages that both models saw removes the unseen-language confound.
+
+\para{Training.}
+We use standard recipes with no per-language tuning: AdamW, a linear schedule with 10\% warmup, mixed precision, and model selection on English dev data only.
+\xnli uses 3 seeds, NER 3 seeds and \sib 5 seeds, for 22 runs in total.
+\Secref{sec:app_training} gives all hyperparameters.
+
+\subsection{Predictors}
+\para{Fertility ratio (primary).}
+We count subword tokens per whitespace word on the language's 1{,}004 \flores sentences and divide by the same quantity for English (1.32 for \mbert, 1.40 for \xlmr).
+Chinese, Japanese, Thai and Burmese are not whitespace-segmented, so we exclude them from the primary analysis.
+This leaves 67 targets (12 for \xnli).
+
+\para{Parallel token ratio (secondary).}
+We divide the number of tokens on the \flores sentences by the number of tokens on their English translations.
+This is defined for all 71 targets.
+
+\para{Baselines.}
+The main competitor is \uriel~\cite{littell2017uriel} syntactic distance from English, the typological distance used most in prior work.
+We also report phonological, inventory, genetic and geographic distances, and all five jointly with adjusted \rsq.
+Pretraining size is $\log_{10}$ bytes of the language's Wikipedia dump for \mbert and of its CC-100 file for \xlmr.
+We also include a non-Latin script indicator.
+
+\subsection{Statistical Analysis}
+We report OLS \rsq with 95\% percentile bootstrap confidence intervals over languages (10{,}000 resamples), and a bootstrap interval for differences in \rsq.
+For H4 we report partial correlations with OLS $t$-tests and the unique \rsq of each predictor in the model with fertility, log size and syntactic distance.
+We apply Holm correction across the six cells for each family of tests.
+For a pooled estimate we z-score the drop within each cell and cluster the bootstrap by language.
+For H3 we compare the share of languages with $\Delta>30$ above and below 2.5$\times$ with Fisher's exact test, and we add a hinge at 2.5 to the linear fit as a check for nonlinearity.
+
+\subsection{Two Designs That Hold the Language Fixed}
+Across languages, fertility is correlated with size, typology and script.
+We add two designs in which these cannot vary.
+
+\para{Within-language contrast.}
+For each language we relate the fertility difference between the two models (\mbert minus \xlmr) to the drop difference (\mbert minus \xlmr).
+Typology and test data are identical on both sides.
+
+\para{Over-segmentation intervention.}
+We re-segment English test inputs so that no subword exceeds a cap of 6, 4, 3, 2 or 1 characters.
+The text, the model and the labels are unchanged; only the granularity of the segmentation changes.
+With no cap, our manual pipeline reproduces the standard tokenization exactly; we checked this on 300 examples per task and model and asserted it against the standard English score for every checkpoint.
+This is the only experiment here that manipulates fertility directly.
+
+\subsection{Deviations from the Plan}
+We trained \xnli on a fixed 100k subset of MNLI instead of all 393k examples because of limited compute, so English accuracy is about 3 points below published full-data numbers.
+We measure \mbert's pretraining size by Wikipedia dump bytes instead of article counts.
+We added the script control in H4 after inspecting the fertility values but before running any regression.
+\Secref{sec:app_deviations} lists all deviations.

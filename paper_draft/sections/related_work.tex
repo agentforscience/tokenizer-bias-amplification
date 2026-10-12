@@ -1,0 +1,21 @@
+\section{Related Work}
+\label{sec:related}
+
+\para{Tokenization quality in multilingual models.}
+\citet{acs2019exploring} introduced fertility as a way to describe how \mbert's WordPiece vocabulary splits words in different languages.
+\citet{rust2021good} showed that \mbert over-segments some languages relative to dedicated monolingual tokenizers, and that this hurts monolingual downstream performance.
+These studies establish that segmentation granularity can matter for a language's quality within a model.
+Unlike them, we ask whether fertility predicts the \emph{cross-lingual transfer drop} from English, and whether it does so better than competing explanations.
+
+\para{What predicts zero-shot transfer.}
+\citet{pires2019multilingual} related \mbert's zero-shot transfer to typological similarity between source and target, and \citet{wu2019beto} documented its strong but uneven transfer across tasks.
+\citet{k2020crosslingual} studied which linguistic and architectural properties cross-lingual ability depends on.
+\citet{lauscher2020zero} found that transfer performance correlates with both typological similarity and the size of the target-language pretraining corpus, with the mix depending on the task.
+\citet{wu2020all} showed that \mbert serves low-resource languages poorly.
+\citet{lin2019choosing} used \uriel distances~\cite{littell2017uriel} together with data-dependent features to rank transfer languages.
+Building on this line of work, we add fertility as a competing predictor of the same drops, and our results agree with the typology-and-size account rather than replacing it.
+
+\para{Benchmarks.}
+We rely on \xnli~\cite{conneau2018xnli}, \wikiann~\cite{pan2017wikiann} with the splits of \citet{rahimi2019massively}, and \sib~\cite{adelani2024sib200}, which is built on \flores sentences~\cite{nllb2022}.
+\textsc{XTREME}~\cite{hu2020xtreme} popularized the English-train, zero-shot-test protocol that we follow.
+The wide language coverage of \wikiann and \sib is what makes a regression over languages feasible.

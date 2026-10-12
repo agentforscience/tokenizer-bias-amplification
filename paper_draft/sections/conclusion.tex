@@ -1,0 +1,14 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We tested whether tokenizer fertility explains zero-shot cross-lingual transfer loss in \mbert and \xlmr across three tasks and up to 71 target languages.
+Fertility explains 0--27\% of the between-language variance in transfer drop, not 40--60\%.
+Syntactic distance outperforms it in every setting we tested, the 2.5$\times$ threshold is not a reliable failure boundary, and fertility's predictive value beyond pretraining size and syntactic distance is small.
+Fragmentation does have a causal cost when it is unfamiliar to the model, and a tokens-per-parallel-sentence measure shows a stronger association that survives controls on one task.
+The key takeaway is that how finely a tokenizer splits a language tells us little, by itself, about how well a model will transfer to it.
+
+Several follow-ups would sharpen these conclusions.
+The most valuable is to train the same architecture on the same corpus with different vocabularies; this is the experiment that isolates the tokenizer, and nothing here does.
+Testing the parallel token ratio on other parallel benchmarks would show whether the \sib result is general or an artifact of measuring fertility on the task's own text distribution.
+Replacing raw fertility with a measure of \emph{excess} fragmentation, for example relative to a monolingual tokenizer~\cite{rust2021good} or to morpheme counts, would separate the two components we propose in \secref{sec:discussion}.
+Finally, the analysis should be repeated with full-data \xnli and with larger and decoder-only models.

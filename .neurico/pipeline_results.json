@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "stages": {
+    "resource_finder": {
+      "success": true,
+      "skipped": true
+    },
+    "experiment_runner": {
+      "success": true,
+      "return_code": 0,
+      "elapsed_time": 7883.666412115097,
+      "log_file": "/data/summereunann/neurico-workspaces/tokenizer_bias_amplification___20261009_122939_923d179d/logs/execution_claude.log",
+      "transcript_file": "/data/summereunann/neurico-workspaces/tokenizer_bias_amplification___20261009_122939_923d179d/logs/execution_claude_transcript.jsonl",
+      "background_processes_terminated": false
+    }
+  },
+  "work_dir": "/data/summereunann/neurico-workspaces/tokenizer_bias_amplification___20261009_122939_923d179d"
+}

@@ -1,0 +1,22 @@
+\begin{table}[t]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}lllllc@{}}
+        \toprule
+        Cell & Languages above 2.5$\times$ & Above: drop $>30$ & Below: drop $>30$ & Mean drop above / below & Fisher $p$ \\
+        \midrule
+        NER, \mbert   & 6 (\lang{gu ka kn ml ta te}) & 5 of 6 & 8 of 61 & 30.4 / 16.5 & 0.001 \\
+        \sib, \mbert  & same 6 & 1 of 6 & 3 of 61 & 19.7 / 11.2 & 0.32 \\
+        \xnli, \mbert & 0 of 12 & -- & 0 of 12 & -- & -- \\
+        NER, \xlmr    & 0 of 67 & -- & 10 of 67 & -- & -- \\
+        \sib, \xlmr   & 0 of 67 & -- & 0 of 67 & -- & -- \\
+        \xnli, \xlmr  & 0 of 12 & -- & 0 of 12 & -- & -- \\
+        \bottomrule
+    \end{tabular}
+    }
+    \caption{
+        The 2.5$\times$ threshold on whitespace-segmented targets.
+        Only \mbert's tokenizer produces any language above the threshold, and those six languages fail on NER but not on topic classification.
+    }
+    \label{tab:threshold}
+\end{table}

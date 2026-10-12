@@ -1,0 +1,11 @@
+Multilingual encoders are fine-tuned on English and applied zero-shot to other languages, and the loss they suffer varies widely across languages.
+A common intuition is that this loss comes from the shared subword vocabulary fragmenting some languages more than others.
+We test a specific version of this claim: that a language's tokenizer fertility relative to English explains 40--60\% of the variance in transfer drop, beats typological distance, causes catastrophic failure above 2.5$\times$, and does so independently of pretraining data size.
+We fine-tune \mbert and \xlmr on English for three tasks (\xnli, \wikiann NER, \sib) and evaluate on up to 71 target languages.
+The hypothesis is not supported.
+Fertility explains 0--27\% of the between-language variance, below 40\% in all six model--task cells, whereas syntactic distance explains 28--68\% and exceeds fertility in every cell.
+Pooled over cells, fertility reaches $R^2=0.16$ against 0.37 for syntactic distance and 0.32 for log pretraining size, and it adds at most 0.05 of $R^2$ once those two are controlled.
+The 2.5$\times$ threshold is not a usable rule: no whitespace-segmented language reaches it under \xlmr's tokenizer.
+Fragmentation is not harmless, however.
+Within a language, the model that fragments it more loses more ($r=0.34$--$0.61$), and artificially over-segmenting English at test time costs 30--59 points at about twice the normal fertility.
+Fertility is therefore a weak screening signal for transfer risk, and syntactic distance and pretraining volume are more informative.
